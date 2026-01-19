@@ -1,7 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
+import os
 
-app = Flask(__name__)
+# Construct the absolute path to the frontend directory
+static_folder_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
+app = Flask(__name__, static_folder=static_folder_path)
 CORS(app)
 
 @app.route('/api/dashboard')
@@ -66,6 +69,10 @@ def get_dashboard_data():
         ]
     }
     return jsonify(data)
+
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
